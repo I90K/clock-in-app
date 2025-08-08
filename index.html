@@ -1,79 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Clock In</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KO Innovations | Clock In/Out</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #004080;
+      --accent-color: #007acc;
+      --bg-light: #f4f6f8;
+      --text-dark: #333;
+      --border-radius: 4px;
+      --transition-fast: 0.2s;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: var(--primary-color);
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-weight: 500;
+      font-size: 1.75rem;
+      letter-spacing: 1px;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      background: #fff;
       padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
       text-align: center;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
+    .container label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .container select {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      width: 48%;
+      margin: 1%;
+      padding: 12px 0;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      color: #fff;
+    }
+    .btn-in {
+      background-color: var(--accent-color);
+    }
+    .btn-in:hover {
+      background-color: #005fa3;
+    }
+    .btn-out {
+      background-color: #e60000;
+    }
+    .btn-out:hover {
+      background-color: #cc0000;
     }
     #result {
       margin-top: 20px;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
-    select {
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 20px;
+    footer {
+      background-color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 0.85rem;
+      color: #777;
+      border-top: 1px solid #e0e0e0;
     }
   </style>
 </head>
 <body>
-  <h1>Clock In / Clock Out</h1>
-
-  <label for="employee">Select Employee:</label>
-  <br>
-  <select id="employee">
-    <option value="Mark">Mark</option>
-    <option value="Luis">Luis</option>
-    <option value="Daniel">Daniel</option>
-    <option value="Jacob">Jacob</option>
-  </select>
-
-  <br>
-  <button onclick="clockIn()">Clock In</button>
-  <button onclick="clockOut()">Clock Out</button>
-  <div id="result"></div>
+  <header>
+    <h1>KO Innovations</h1>
+  </header>
+  <main>
+    <div class="container">
+      <h2>Clock In / Clock Out</h2>
+      <label for="employee">Select Employee</label>
+      <select id="employee">
+        <option value="Mark">Mark</option>
+        <option value="Luis">Luis</option>
+        <option value="Daniel">Daniel</option>
+        <option value="Jacob">Jacob</option>
+      </select>
+      <div>
+        <button class="btn btn-in" onclick="clockIn()">Clock In</button>
+        <button class="btn btn-out" onclick="clockOut()">Clock Out</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </main>
+  <footer>
+    &copy; 2025 KO Innovations. All rights reserved.
+  </footer>
 
   <script>
-    // Variables to store clock in/out info for future use
     let lastClockIn = null;
     let lastClockOut = null;
-
-    // Your Google Apps Script Web App URL
     const sheetURL = "https://script.google.com/macros/s/AKfycbz3U1701BCijrnVfX0xZhRJbvKnpae2B-ylj528-xvwX-2Aj80yiqunbvX1FWgSsfQBPA/exec";
 
-    function clockIn() {
-      handleClockAction("Clock In");
-    }
-
-    function clockOut() {
-      handleClockAction("Clock Out");
-    }
+    function clockIn() { handleClockAction("Clock In"); }
+    function clockOut() { handleClockAction("Clock Out"); }
 
     function handleClockAction(actionType) {
       const resultDiv = document.getElementById("result");
       const employeeName = document.getElementById("employee").value;
 
       if (!navigator.geolocation) {
-        resultDiv.innerHTML = "Geolocation is not supported by your browser.";
+        resultDiv.textContent = "Geolocation is not supported by your browser.";
         return;
       }
 
       navigator.geolocation.getCurrentPosition(success, error);
 
       async function success(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+        const { latitude, longitude } = position.coords;
         const timestamp = new Date();
         const formattedTime = timestamp.toLocaleString();
-
-        const apiKey = "AIzaSyBKqr9BpcOYbZmflZ_lgg_vkTLmPi-1fQs";
+        const apiKey = "YOUR_GOOGLE_API_KEY"; // Replace with secure retrieval method
         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
         try {
@@ -81,34 +168,11 @@
           const data = await response.json();
           const address = data.results[0]?.formatted_address || "Address not found";
 
-          // Store time variables for future use
-          if (actionType === "Clock In") {
-            lastClockIn = {
-              employee: employeeName,
-              time: timestamp,
-              address: address
-            };
-          } else {
-            lastClockOut = {
-              employee: employeeName,
-              time: timestamp,
-              address: address
-            };
-          }
+          if (actionType === "Clock In") lastClockIn = { employee: employeeName, time: timestamp, address };
+          else lastClockOut = { employee: employeeName, time: timestamp, address };
 
-          // Send data to Google Sheets
-          await fetch(sheetURL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              employee: employeeName,
-              action: actionType,
-              timestamp: formattedTime,
-              address: address
-            })
+          await fetch(sheetURL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ employee: employeeName, action: actionType, timestamp: formattedTime, address })
           });
 
           resultDiv.innerHTML = `
@@ -127,7 +191,7 @@
       }
 
       function error(err) {
-        resultDiv.innerHTML = "Error getting location: " + err.message;
+        resultDiv.textContent = "Error getting location: " + err.message;
       }
     }
   </script>
