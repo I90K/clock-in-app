@@ -33,22 +33,34 @@
 
       navigator.geolocation.getCurrentPosition(success, error);
 
-      function success(position) {
+      async function success(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const timestamp = new Date().toLocaleString();
 
-        const clockInData = {
-          time: timestamp,
-          latitude: latitude,
-          longitude: longitude
-        };
+        // 🟡 Your Google Maps Geocoding API Key
+        const apiKey = "AIzaSyBKqr9BpcOYbZmflZ_lgg_vkTLmPi-1fQs";
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
-        resultDiv.innerHTML = `
-          <p><strong>Time:</strong> ${clockInData.time}</p>
-          <p><strong>Latitude:</strong> ${clockInData.latitude}</p>
-          <p><strong>Longitude:</strong> ${clockInData.longitude}</p>
-        `;
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          const address = data.results[0]?.formatted_address || "Address not found";
+
+          resultDiv.innerHTML = `
+            <p><strong>Time:</strong> ${timestamp}</p>
+            <p><strong>Latitude:</strong> ${latitude}</p>
+            <p><strong>Longitude:</strong> ${longitude}</p>
+            <p><strong>Address:</strong> ${address}</p>
+          `;
+        } catch (err) {
+          resultDiv.innerHTML = `
+            <p><strong>Time:</strong> ${timestamp}</p>
+            <p><strong>Latitude:</strong> ${latitude}</p>
+            <p><strong>Longitude:</strong> ${longitude}</p>
+            <p><strong>Address:</strong> Failed to retrieve address</p>
+          `;
+        }
       }
 
       function error(err) {
