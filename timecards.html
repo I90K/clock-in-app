@@ -1,101 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Timecard Viewer</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KO Innovations | Timecard Viewer</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #004080;
+      --accent-color: #007acc;
+      --bg-light: #f4f6f8;
+      --text-dark: #333;
+      --border-radius: 4px;
+      --transition-fast: 0.2s;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: var(--primary-color);
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-weight: 500;
+      font-size: 1.75rem;
+      letter-spacing: 1px;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      background: #fff;
       padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .container h2 {
+      margin-bottom: 20px;
+      font-weight: 500;
       text-align: center;
     }
-    select, input[type="date"], button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .form-group select,
+    .form-group input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      color: #fff;
+      background-color: var(--accent-color);
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #005fa3;
     }
     #results {
       margin-top: 30px;
       text-align: left;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
     .entry {
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #e0e0e0;
       padding: 10px 0;
+    }
+    footer {
+      background-color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 0.85rem;
+      color: #777;
+      border-top: 1px solid #e0e0e0;
     }
   </style>
 </head>
 <body>
-  <h1>Manager Timecard Viewer</h1>
+  <header>
+    <h1>KO Innovations</h1>
+  </header>
+  <main>
+    <div class="container">
+      <h2>Manager Timecard Viewer</h2>
+      <div class="form-group">
+        <label for="employee">Select Employee</label>
+        <select id="employee">
+          <option value="Mark">Mark</option>
+          <option value="Luis">Luis</option>
+          <option value="Daniel">Daniel</option>
+          <option value="Jacob">Jacob</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Select Date</label>
+        <input type="date" id="date">
+      </div>
+      <button class="btn" onclick="viewTimecard()">View Timecard</button>
+      <div id="results"></div>
+    </div>
+  </main>
+  <footer>
+    &copy; 2025 KO Innovations. All rights reserved.
+  </footer>
 
-  <label for="employee">Select Employee:</label><br>
-  <select id="employee">
-    <option value="Mark">Mark</option>
-    <option value="Luis">Luis</option>
-    <option value="Daniel">Daniel</option>
-    <option value="Jacob">Jacob</option>
-  </select><br>
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz3U1701BCijrnVfX0xZhRJbvKnpae2B-ylj528-xvwX-2Aj80yiqunbvX1FWgSsfQBPA/exec";
 
-  <label for="date">Select Date:</label><br>
-  <input type="date" id="date"><br>
+    async function viewTimecard() {
+      const selectedEmployee = document.getElementById("employee").value;
+      const selectedDate = document.getElementById("date").value;
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "<p>Loading...</p>";
 
-  <button onclick="viewTimecard()">View Timecard</button>
-
-  <div id="results"></div>
-
-<script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbz3U1701BCijrnVfX0xZhRJbvKnpae2B-ylj528-xvwX-2Aj80yiqunbvX1FWgSsfQBPA/exec";
-
-  async function viewTimecard() {
-    const selectedEmployee = document.getElementById("employee").value;
-    const selectedDate = document.getElementById("date").value;
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "<p>Loading...</p>";
-
-    if (!selectedDate) {
-      resultsDiv.innerHTML = "<p>Please select a date.</p>";
-      return;
-    }
-
-    try {
-      const response = await fetch(scriptURL);
-      const data = await response.json();
-
-      console.log("Fetched data:", data);
-
-      const filtered = data.filter(entry => {
-        const employee = entry.employee || entry.Employee;
-        const timestamp = entry.timestamp || entry.Timestamp;
-        const entryDateOnly = (timestamp || "").split("T")[0]; // e.g. '2025-08-08'
-
-        return employee === selectedEmployee && entryDateOnly === selectedDate;
-      });
-
-      if (filtered.length === 0) {
-        resultsDiv.innerHTML = `<p>No entries for ${selectedEmployee} on ${selectedDate}</p>`;
+      if (!selectedDate) {
+        resultsDiv.innerHTML = "<p>Please select a date.</p>";
         return;
       }
 
-      resultsDiv.innerHTML = `<h3>Entries for ${selectedEmployee} on ${selectedDate}:</h3>`;
-      filtered.forEach(entry => {
-const time = new Date(entry.timestamp || entry.Timestamp).toLocaleString();
-const action = entry.action || entry.Action;
-const address = entry.address || entry.Address;
+      try {
+        const response = await fetch(scriptURL);
+        const data = await response.json();
 
-        resultsDiv.innerHTML += `
-          <div class="entry">
-            <p><strong>Action:</strong> ${action}</p>
-            <p><strong>Time:</strong> ${time}</p>
-            <p><strong>Address:</strong> ${address}</p>
-          </div>
-        `;
-      });
-    } catch (err) {
-      console.error("Fetch error:", err);
-      resultsDiv.innerHTML = "<p>Error loading data. Please try again later.</p>";
+        const filtered = data.filter(entry => {
+          const employee = entry.employee || entry.Employee;
+          const timestamp = entry.timestamp || entry.Timestamp;
+          const entryDateOnly = (timestamp || "").split("T")[0];
+          return employee === selectedEmployee && entryDateOnly === selectedDate;
+        });
+
+        if (!filtered.length) {
+          resultsDiv.innerHTML = `<p>No entries for ${selectedEmployee} on ${selectedDate}</p>`;
+          return;
+        }
+
+        resultsDiv.innerHTML = `<h3>Entries for ${selectedEmployee} on ${selectedDate}:</h3>`;
+        filtered.forEach(entry => {
+          const time = new Date(entry.timestamp || entry.Timestamp).toLocaleString();
+          const action = entry.action || entry.Action;
+          const address = entry.address || entry.Address;
+
+          resultsDiv.innerHTML += `
+            <div class="entry">
+              <p><strong>Action:</strong> ${action}</p>
+              <p><strong>Time:</strong> ${time}</p>
+              <p><strong>Address:</strong> ${address}</p>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error("Fetch error:", err);
+        resultsDiv.innerHTML = "<p>Error loading data. Please try again later.</p>";
+      }
     }
-  }
-</script>
+  </script>
 </body>
 </html>
