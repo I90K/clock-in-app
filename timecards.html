@@ -79,9 +79,9 @@
 
       resultsDiv.innerHTML = `<h3>Entries for ${selectedEmployee} on ${selectedDate}:</h3>`;
       filtered.forEach(entry => {
-        const time = new Date(entry.timestamp || entry.Timestamp).toLocaleString();
-        const action = entry.action || entry.Action;
-        const address = entry.address || entry.Address;
+const action = entry.Action;
+const time = new Date(entry.Timestamp).toLocaleString();
+const address = entry.Address;
 
         resultsDiv.innerHTML += `
           <div class="entry">
