@@ -45,6 +45,9 @@
     let lastClockIn = null;
     let lastClockOut = null;
 
+    // Your Google Apps Script Web App URL
+    const sheetURL = "https://script.google.com/macros/s/AKfycbwHq05cIp61GbO7OrNYHlsgwCaITFC_038eBKqGnAtQmdZKHh9nvVDfKTL7IyMZCDl7MA/exec";
+
     function clockIn() {
       handleClockAction("Clock In");
     }
@@ -93,10 +96,26 @@
             };
           }
 
+          // Send data to Google Sheets
+          await fetch(sheetURL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              employee: employeeName,
+              action: actionType,
+              timestamp: formattedTime,
+              address: address
+            })
+          });
+
           resultDiv.innerHTML = `
             <p><strong>Employee:</strong> ${employeeName}</p>
             <p><strong>${actionType} Time:</strong> ${formattedTime}</p>
             <p><strong>Address:</strong> ${address}</p>
+            <p><em>Saved to Google Sheets ✅</em></p>
           `;
         } catch (err) {
           resultDiv.innerHTML = `
