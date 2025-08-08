@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timecard Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+    select, input[type="date"], button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+    #results {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .entry {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Manager Timecard Viewer</h1>
+
+  <label for="employee">Select Employee:</label><br>
+  <select id="employee">
+    <option value="Mark">Mark</option>
+    <option value="Luis">Luis</option>
+    <option value="Daniel">Daniel</option>
+    <option value="Jacob">Jacob</option>
+  </select><br>
+
+  <label for="date">Select Date:</label><br>
+  <input type="date" id="date"><br>
+
+  <button onclick="viewTimecard()">View Timecard</button>
+
+  <div id="results"></div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbycY9Kxj2vyMX8lGwAWgzZ8ZWcPUzsz2DSv4TjnmJrNV2VL2ZiA2oPt4-oWS10k1Q1JDw/exec";
+
+    async function viewTimecard() {
+      const selectedEmployee = document.getElementById("employee").value;
+      const selectedDate = document.getElementById("date").value;
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "<p>Loading...</p>";
+
+      if (!selectedDate) {
+        resultsDiv.innerHTML = "<p>Please select a date.</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch(scriptURL);
+        const data = await response.json();
+
+        const filtered = data.filter(entry => {
+          return (
+            entry.employee === selectedEmployee &&
+            entry.timestamp.startsWith(formatDate(selectedDate))
+          );
+        });
+
+        if (filtered.length === 0) {
+          resultsDiv.innerHTML = `<p>No entries for ${selectedEmployee} on ${selectedDate}</p>`;
+          return;
+        }
+
+        resultsDiv.innerHTML = `<h3>Entries for ${selectedEmployee} on ${selectedDate}:</h3>`;
+        filtered.forEach(entry => {
+          resultsDiv.innerHTML += `
+            <div class="entry">
+              <p><strong>Action:</strong> ${entry.action}</p>
+              <p><strong>Time:</strong> ${entry.timestamp}</p>
+              <p><strong>Address:</strong> ${entry.address}</p>
+            </div>
+          `;
+        });
+      } catch (err) {
+        resultsDiv.innerHTML = "<p>Error loading data. Please try again later.</p>";
+        console.error(err);
+      }
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      };
+      return date.toLocaleDateString(undefined, options);
+    }
+  </script>
+</body>
+</html>
 
