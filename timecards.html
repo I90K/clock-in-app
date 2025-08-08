@@ -68,16 +68,15 @@
         const employee = entry.employee || entry.Employee;
         const timestamp = entry.timestamp || entry.Timestamp;
 
-        const entryDate = new Date(timestamp);
-        const selected = new Date(selectedDate);
+       const entryDate = new Date(timestamp);
+const selected = new Date(selectedDate);
 
-        return (
-          employee === selectedEmployee &&
-          entryDate.getFullYear() === selected.getFullYear() &&
-          entryDate.getMonth() === selected.getMonth() &&
-          entryDate.getDate() === selected.getDate()
-        );
-      });
+return (
+  employee === selectedEmployee &&
+  entryDate.getFullYear() === selected.getFullYear() &&
+  entryDate.getMonth() === selected.getMonth() &&
+  entryDate.getDate() === selected.getDate()
+);
 
       if (filtered.length === 0) {
         resultsDiv.innerHTML = `<p>No entries for ${selectedEmployee} on ${selectedDate}</p>`;
