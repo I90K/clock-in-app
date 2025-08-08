@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clock In</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+    #result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Clock In</h1>
+  <button onclick="clockIn()">Clock In</button>
+  <div id="result"></div>
+
+  <script>
+    function clockIn() {
+      const resultDiv = document.getElementById("result");
+
+      if (!navigator.geolocation) {
+        resultDiv.innerHTML = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(success, error);
+
+      function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const timestamp = new Date().toLocaleString();
+
+        const clockInData = {
+          time: timestamp,
+          latitude: latitude,
+          longitude: longitude
+        };
+
+        resultDiv.innerHTML = `
+          <p><strong>Time:</strong> ${clockInData.time}</p>
+          <p><strong>Latitude:</strong> ${clockInData.latitude}</p>
+          <p><strong>Longitude:</strong> ${clockInData.longitude}</p>
+        `;
+      }
+
+      function error(err) {
+        resultDiv.innerHTML = "Error getting location: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
