@@ -16,10 +16,26 @@
     #result {
       margin-top: 20px;
     }
+    select {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <h1>Clock In / Clock Out</h1>
+
+  <label for="employee">Select Employee:</label>
+  <br>
+  <select id="employee">
+    <option value="Mark">Mark</option>
+    <option value="Luis">Luis</option>
+    <option value="Daniel">Daniel</option>
+    <option value="Jacob">Jacob</option>
+  </select>
+
+  <br>
   <button onclick="clockIn()">Clock In</button>
   <button onclick="clockOut()">Clock Out</button>
   <div id="result"></div>
@@ -35,6 +51,7 @@
 
     function handleClockAction(actionType) {
       const resultDiv = document.getElementById("result");
+      const employeeName = document.getElementById("employee").value;
 
       if (!navigator.geolocation) {
         resultDiv.innerHTML = "Geolocation is not supported by your browser.";
@@ -57,11 +74,13 @@
           const address = data.results[0]?.formatted_address || "Address not found";
 
           resultDiv.innerHTML = `
+            <p><strong>Employee:</strong> ${employeeName}</p>
             <p><strong>${actionType} Time:</strong> ${timestamp}</p>
             <p><strong>Address:</strong> ${address}</p>
           `;
         } catch (err) {
           resultDiv.innerHTML = `
+            <p><strong>Employee:</strong> ${employeeName}</p>
             <p><strong>${actionType} Time:</strong> ${timestamp}</p>
             <p><strong>Address:</strong> Failed to retrieve address</p>
           `;
