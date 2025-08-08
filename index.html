@@ -41,6 +41,10 @@
   <div id="result"></div>
 
   <script>
+    // Variables to store clock in/out info for future use
+    let lastClockIn = null;
+    let lastClockOut = null;
+
     function clockIn() {
       handleClockAction("Clock In");
     }
@@ -63,7 +67,8 @@
       async function success(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        const timestamp = new Date().toLocaleString();
+        const timestamp = new Date();
+        const formattedTime = timestamp.toLocaleString();
 
         const apiKey = "AIzaSyBKqr9BpcOYbZmflZ_lgg_vkTLmPi-1fQs";
         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
@@ -73,15 +78,30 @@
           const data = await response.json();
           const address = data.results[0]?.formatted_address || "Address not found";
 
+          // Store time variables for future use
+          if (actionType === "Clock In") {
+            lastClockIn = {
+              employee: employeeName,
+              time: timestamp,
+              address: address
+            };
+          } else {
+            lastClockOut = {
+              employee: employeeName,
+              time: timestamp,
+              address: address
+            };
+          }
+
           resultDiv.innerHTML = `
             <p><strong>Employee:</strong> ${employeeName}</p>
-            <p><strong>${actionType} Time:</strong> ${timestamp}</p>
+            <p><strong>${actionType} Time:</strong> ${formattedTime}</p>
             <p><strong>Address:</strong> ${address}</p>
           `;
         } catch (err) {
           resultDiv.innerHTML = `
             <p><strong>Employee:</strong> ${employeeName}</p>
-            <p><strong>${actionType} Time:</strong> ${timestamp}</p>
+            <p><strong>${actionType} Time:</strong> ${formattedTime}</p>
             <p><strong>Address:</strong> Failed to retrieve address</p>
           `;
         }
